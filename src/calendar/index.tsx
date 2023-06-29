@@ -63,6 +63,8 @@ export interface CalendarProps extends CalendarHeaderProps, DayProps {
   customHeader?: any;
   /** Allow selection of dates before minDate or after maxDate */
   allowSelectionOutOfRange?: boolean;
+
+  isCollapsed : boolean
 }
 
 /**
@@ -94,7 +96,8 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     accessibilityElementsHidden,
     importantForAccessibility,
     testID,
-    style: propsStyle
+    style: propsStyle,
+    isCollapsed = false
   } = props;
   const [currentMonth, setCurrentMonth] = useState(current || initialDate ? parseDate(current || initialDate) : new XDate());
   const style = useRef(styleConstructor(theme));
@@ -241,8 +244,8 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     while (days.length) {
       weeks.push(renderWeek(days.splice(0, 7), weeks.length));
     }
-
-    return <View style={style.current.monthView}>{weeks}</View>;
+     let firstWeek = weeks[0];
+        return <View style={style.current.monthView}>{isCollapsed? firstWeek: weeks}</View>;
   };
 
   const shouldDisplayIndicator = useMemo(() => {
