@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import XDate from 'xdate';
+import dayjs from "dayjs"
 import isEmpty from 'lodash/isEmpty';
 import React, {useRef, useState, useEffect, useCallback, useMemo} from 'react';
 import {View, ViewStyle, StyleProp} from 'react-native';
@@ -236,15 +237,37 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     );
   };
 
+
   const renderMonth = () => {
     const shouldShowSixWeeks = showSixWeeks && !hideExtraDays;
     const days = page(currentMonth, firstDay, shouldShowSixWeeks);
     const weeks = [];
+    const weekData=[];
+
 
     while (days.length) {
+      weekData.push([...days].splice(0, 7), weeks.length)
+    
       weeks.push(renderWeek(days.splice(0, 7), weeks.length));
     }
-     let firstWeek = weeks[0];
+
+    const filtered=weekData.filter(item=>Array.isArray(item))
+
+    let index:any=0;
+
+    for(let i in filtered){
+      
+      if(  
+        filtered[i].find((date)=>dayjs(date).isSame(dayjs(initialDate),"day")))
+        {
+
+            index=i
+            break
+      }
+
+    }
+
+     let firstWeek = weeks[index];
         return <View style={style.current.monthView}>{isCollapsed? firstWeek: weeks}</View>;
   };
 
